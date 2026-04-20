@@ -94,11 +94,11 @@
       margin: 0 auto 22px;
     }
 
-    .players-grid.count-2 { grid-template-columns: 1fr 1fr; max-width: 660px; }
-    .players-grid.count-3 { grid-template-columns: 1fr 1fr 1fr; max-width: 900px; }
-    .players-grid.count-4 { grid-template-columns: 1fr 1fr; max-width: 660px; }
-    .players-grid.count-5 { grid-template-columns: 1fr 1fr 1fr; max-width: 900px; }
-    .players-grid.count-6 { grid-template-columns: 1fr 1fr 1fr; max-width: 900px; }
+    .players-grid.count-2 { grid-template-columns: 1fr 1fr; max-width: 520px; }
+    .players-grid.count-3 { grid-template-columns: 1fr 1fr 1fr; max-width: 740px; }
+    .players-grid.count-4 { grid-template-columns: 1fr 1fr; max-width: 520px; }
+    .players-grid.count-5 { grid-template-columns: 1fr 1fr 1fr; max-width: 740px; }
+    .players-grid.count-6 { grid-template-columns: 1fr 1fr 1fr; max-width: 740px; }
 
     @media (max-width: 500px) {
       .players-grid.count-3,
@@ -187,19 +187,18 @@
       margin-bottom: 6px;
     }
 
-    .phases-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
+    .phases-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-bottom: 4px; }
 
     .phase-badge {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
-      width: 26px;
-      height: 26px;
+      width: 100%;
+      aspect-ratio: 1;
       border-radius: 50%;
       font-family: 'Boogaloo', cursive;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       border: 2px solid transparent;
-      flex-shrink: 0;
       user-select: none;
     }
 
@@ -237,7 +236,7 @@
     .btn-complete:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
     .phases-panel {
-      max-width: 960px;
+      max-width: 740px;
       margin: 0 auto 20px;
       background: rgba(255,255,255,0.02);
       border: 1px solid rgba(255,255,255,0.05);
@@ -294,7 +293,7 @@
     .status-chip.future { background: rgba(255,255,255,0.03); color: #2e2e2e; }
 
     .winner-banner {
-      max-width: 960px;
+      max-width: 740px;
       margin: 0 auto 20px;
       border-radius: 18px;
       padding: 18px;
@@ -308,7 +307,7 @@
     .bottom-row {
       display: flex;
       gap: 10px;
-      max-width: 960px;
+      max-width: 740px;
       margin: 0 auto;
       justify-content: center;
     }
