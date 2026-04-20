@@ -9,6 +9,10 @@ A clean, mobile-friendly score and phase tracker for the card game Phase 10. Bui
 - **Phase progress** — visual 5×2 badge grid showing completed, current, and upcoming phases
 - **Phase reference** — full table of all 10 phases visible at a glance
 - **Winner detection** — automatically crowns the winner when all 10 phases are complete (lowest score wins ties)
+- **Confetti** — a burst of confetti fires when a winner is declared 🎉
+- **Undo** — reverse the last score addition or phase advance, up to 50 steps back
+- **Auto-save** — game state is saved automatically so closing and reopening picks up where you left off
+- **Light & dark mode** — toggle between themes, preference is remembered between sessions
 - **Responsive layout** — scales gracefully from desktop down to mobile
 - **iPhone home screen support** — add to your home screen in Safari for a native app feel
 
@@ -33,7 +37,8 @@ A clean, mobile-friendly score and phase tracker for the card game Phase 10. Bui
 2. Tap a player name to rename it
 3. After each round, enter the points scored and tap **+ Add**
 4. When a player completes their current phase, tap **✓ Complete Phase**
-5. The winner is declared when someone finishes all 10 phases
+5. Use **↩ Undo** to reverse a mistake, or **↺ Reset Game** to start fresh
+6. The winner is declared (with confetti!) when someone finishes all 10 phases
 
 ## Add to iPhone Home Screen
 

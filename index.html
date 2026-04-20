@@ -14,26 +14,38 @@
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     body {
-      background: #0e0e14;
       min-height: 100vh;
       font-family: 'Nunito', sans-serif;
       overscroll-behavior: none;
+      transition: background 0.3s;
     }
+
+    body.dark { background: #0e0e14; }
+    body.light { background: #f0f0f8; }
 
     #root { min-height: 100vh; }
 
+    /* ── App shell ── */
     .app {
       min-height: 100vh;
-      background: radial-gradient(ellipse at 20% 20%, #1a1040 0%, #0e0e14 60%);
       padding: env(safe-area-inset-top, 24px) 16px calc(env(safe-area-inset-bottom, 0px) + 40px);
       padding-top: max(env(safe-area-inset-top), 24px);
       box-sizing: border-box;
+      transition: background 0.3s;
     }
 
-    .inner {
-      max-width: 740px;
-      margin: 0 auto;
-      width: 100%;
+    .dark .app  { background: radial-gradient(ellipse at 20% 20%, #1a1040 0%, #0e0e14 60%); }
+    .light .app { background: radial-gradient(ellipse at 20% 20%, #dde0ff 0%, #f0f0f8 60%); }
+
+    .inner { max-width: 740px; margin: 0 auto; width: 100%; }
+
+    /* ── Header ── */
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-bottom: 4px;
     }
 
     .title {
@@ -45,18 +57,37 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 4px;
     }
+
+    .btn-theme {
+      position: absolute;
+      right: 0;
+      background: transparent;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 8px;
+      transition: background 0.2s;
+      line-height: 1;
+    }
+
+    .dark  .btn-theme:hover { background: rgba(255,255,255,0.08); }
+    .light .btn-theme:hover { background: rgba(0,0,0,0.06); }
 
     .subtitle {
       text-align: center;
-      color: #555;
       font-size: 0.8rem;
       letter-spacing: 3px;
       text-transform: uppercase;
       margin-bottom: 20px;
+      transition: color 0.3s;
     }
 
+    .dark  .subtitle { color: #555; }
+    .light .subtitle { color: #999; }
+
+    /* ── Player count bar ── */
     .player-count-bar {
       display: flex;
       align-items: center;
@@ -66,97 +97,52 @@
     }
 
     .player-count-label {
-      color: #555;
       font-size: 0.78rem;
       letter-spacing: 2px;
       text-transform: uppercase;
+      transition: color 0.3s;
     }
+
+    .dark  .player-count-label { color: #555; }
+    .light .player-count-label { color: #aaa; }
 
     .count-btns {
       display: flex;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.09);
       border-radius: 30px;
       overflow: hidden;
+      transition: background 0.3s, border-color 0.3s;
     }
+
+    .dark  .count-btns { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09); }
+    .light .count-btns { background: rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.1); }
 
     .count-btn {
       background: transparent;
       border: none;
-      color: #555;
       font-family: 'Boogaloo', cursive;
       font-size: 1.1rem;
       padding: 7px 16px;
       cursor: pointer;
       transition: all 0.18s;
-      border-right: 1px solid rgba(255,255,255,0.06);
     }
 
+    .dark  .count-btn { color: #555; border-right: 1px solid rgba(255,255,255,0.06); }
+    .light .count-btn { color: #bbb; border-right: 1px solid rgba(0,0,0,0.07); }
     .count-btn:last-child { border-right: none; }
-    .count-btn.active { background: rgba(255,255,255,0.1); color: #fff; }
 
-    .players-grid {
-      display: grid;
-      gap: 14px;
-      margin: 0 0 22px;
-    }
+    .dark  .count-btn.active { background: rgba(255,255,255,0.1); color: #fff; }
+    .light .count-btn.active { background: rgba(0,0,0,0.08); color: #333; }
 
+    /* ── Player grid ── */
+    .players-grid { display: grid; gap: 14px; margin: 0 0 22px; }
     .players-grid.count-2 { grid-template-columns: 1fr 1fr; }
     .players-grid.count-3 { grid-template-columns: 1fr 1fr 1fr; }
     .players-grid.count-4 { grid-template-columns: 1fr 1fr; }
     .players-grid.count-5 { grid-template-columns: 1fr 1fr 1fr; }
     .players-grid.count-6 { grid-template-columns: 1fr 1fr 1fr; }
 
-    /* --- Responsive breakpoints --- */
-
-    /* 600px: 3-col grids drop to 2-col, start shrinking text */
-    @media (max-width: 600px) {
-      .title { font-size: 2.2rem; }
-
-      .players-grid.count-3,
-      .players-grid.count-5,
-      .players-grid.count-6 { grid-template-columns: 1fr 1fr; }
-
-      .score-display { font-size: 2.3rem; }
-      .player-card { padding: 12px 10px; }
-      .btn-complete { font-size: 0.78rem; padding: 8px 8px; }
-    }
-
-    /* 480px: shrink further, tighten gaps */
-    @media (max-width: 480px) {
-      .app { padding-left: 10px; padding-right: 10px; }
-      .players-grid { gap: 10px; }
-      .title { font-size: 1.9rem; }
-      .score-display { font-size: 1.9rem; }
-      .score-label { font-size: 0.55rem; }
-      .player-card { padding: 10px 8px; border-radius: 14px; }
-      .player-name-input { font-size: 1rem; }
-      .score-input { font-size: 0.85rem; padding: 5px 6px; }
-      .btn-add { font-size: 0.75rem; padding: 5px 8px; }
-      .btn-complete { font-size: 0.72rem; padding: 7px 6px; margin-top: 7px; }
-      .phase-badge { font-size: 0.72rem; }
-      .phase-detail { font-size: 0.6rem; }
-      .phase-section-title { font-size: 0.52rem; }
-    }
-
-    /* 340px: only now go single column for 2-col grids */
-    @media (max-width: 340px) {
-      .players-grid.count-2,
-      .players-grid.count-3,
-      .players-grid.count-4,
-      .players-grid.count-5,
-      .players-grid.count-6 { grid-template-columns: 1fr; }
-
-      .title { font-size: 1.7rem; }
-      .score-display { font-size: 2.4rem; }
-      .phases-panel { padding: 12px 10px; }
-    }
-
-    .player-card {
-      border-radius: 18px;
-      padding: 16px 14px;
-      border: 2px solid transparent;
-    }
+    /* ── Player card ── */
+    .player-card { border-radius: 18px; padding: 16px 14px; border: 2px solid transparent; }
 
     .player-name-row { display: flex; align-items: center; margin-bottom: 10px; }
 
@@ -173,7 +159,9 @@
       transition: border-color 0.2s;
     }
 
+    .light .player-name-input { border-bottom-color: rgba(0,0,0,0.12); }
     .player-name-input:focus { border-bottom-color: rgba(255,255,255,0.38); }
+    .light .player-name-input:focus { border-bottom-color: rgba(0,0,0,0.3); }
 
     .score-display {
       font-family: 'Boogaloo', cursive;
@@ -196,10 +184,7 @@
 
     .score-input {
       flex: 1;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.09);
       border-radius: 10px;
-      color: #fff;
       font-family: 'Nunito', sans-serif;
       font-size: 0.95rem;
       font-weight: 700;
@@ -208,7 +193,11 @@
       text-align: center;
       min-width: 0;
       -webkit-appearance: none;
+      transition: border-color 0.2s, background 0.3s;
     }
+
+    .dark  .score-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); color: #fff; }
+    .light .score-input { background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1); color: #222; }
 
     .btn-add {
       border: none;
@@ -248,11 +237,8 @@
       user-select: none;
     }
 
-    .phase-badge.future {
-      background: rgba(255,255,255,0.03);
-      color: #333;
-      border-color: #222;
-    }
+    .phase-badge.future { background: rgba(255,255,255,0.03); color: #333; border-color: #222; }
+    .light .phase-badge.future { background: rgba(0,0,0,0.05); color: #bbb; border-color: #ccc; }
 
     .phase-detail {
       font-size: 0.68rem;
@@ -281,40 +267,46 @@
     .btn-complete:active { transform: scale(0.97); }
     .btn-complete:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
+    /* ── Phases panel ── */
     .phases-panel {
       margin: 0 0 20px;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.05);
       border-radius: 18px;
       padding: 16px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
+      transition: background 0.3s, border-color 0.3s;
     }
 
-    .phases-table { min-width: 280px; }
+    .dark  .phases-panel { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); }
+    .light .phases-panel { background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.07); }
 
     .phases-panel-title {
       font-family: 'Boogaloo', cursive;
       font-size: 1.05rem;
-      color: #444;
       letter-spacing: 2px;
       text-transform: uppercase;
       margin-bottom: 10px;
       text-align: center;
+      transition: color 0.3s;
     }
 
-    .phases-table { width: 100%; border-collapse: collapse; font-size: 0.76rem; }
+    .dark  .phases-panel-title { color: #444; }
+    .light .phases-panel-title { color: #aaa; }
+
+    .phases-table { width: 100%; border-collapse: collapse; font-size: 0.76rem; min-width: 280px; }
 
     .phases-table th {
       font-size: 0.58rem;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: #3a3a3a;
       padding: 3px 8px 7px;
       text-align: center;
       white-space: nowrap;
+      transition: color 0.3s;
     }
 
+    .dark  .phases-table th { color: #3a3a3a; }
+    .light .phases-table th { color: #bbb; }
     .phases-table th.desc-col { text-align: left; }
 
     .phases-table td {
@@ -322,12 +314,17 @@
       border-bottom: 1px solid rgba(255,255,255,0.04);
       text-align: center;
       vertical-align: middle;
+      transition: border-color 0.3s;
     }
 
+    .light .phases-table td { border-bottom-color: rgba(0,0,0,0.05); }
     .phases-table tr:last-child td { border-bottom: none; }
 
     .td-num { font-family: 'Boogaloo', cursive; font-size: 0.95rem; color: #333; width: 26px; }
-    .td-desc { color: #555; text-align: left; white-space: nowrap; }
+    .light .td-num { color: #ccc; }
+    .td-desc { text-align: left; white-space: nowrap; transition: color 0.3s; }
+    .dark  .td-desc { color: #555; }
+    .light .td-desc { color: #888; }
 
     .status-chip {
       display: inline-block;
@@ -338,8 +335,10 @@
       white-space: nowrap;
     }
 
-    .status-chip.future { background: rgba(255,255,255,0.03); color: #2e2e2e; }
+    .dark  .status-chip.future { background: rgba(255,255,255,0.03); color: #2e2e2e; }
+    .light .status-chip.future { background: rgba(0,0,0,0.04); color: #ccc; }
 
+    /* ── Winner banner ── */
     .winner-banner {
       margin: 0 0 20px;
       border-radius: 18px;
@@ -351,26 +350,48 @@
     .winner-text { font-family: 'Boogaloo', cursive; font-size: 2rem; color: #fff; }
     .winner-sub { color: #777; font-size: 0.8rem; margin-top: 4px; }
 
+    /* ── Bottom row ── */
     .bottom-row {
       display: flex;
       gap: 10px;
       justify-content: center;
+      flex-wrap: wrap;
     }
 
-    .btn-reset {
-      background: rgba(255,255,255,0.04);
-      color: #4a4a4a;
-      border: 1px solid rgba(255,255,255,0.08);
+    .btn-reset, .btn-undo {
       border-radius: 12px;
-      padding: 10px 24px;
+      padding: 10px 20px;
       font-size: 0.82rem;
       font-family: 'Nunito', sans-serif;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
       letter-spacing: 1px;
+      border: 1px solid transparent;
     }
 
+    .dark  .btn-reset { background: rgba(255,255,255,0.04); color: #4a4a4a; border-color: rgba(255,255,255,0.08); }
+    .light .btn-reset { background: rgba(0,0,0,0.04); color: #bbb; border-color: rgba(0,0,0,0.08); }
+    .dark  .btn-reset:hover { background: rgba(255,80,80,0.1); color: #ff7070; border-color: rgba(255,80,80,0.22); }
+    .light .btn-reset:hover { background: rgba(255,80,80,0.08); color: #e05050; border-color: rgba(255,80,80,0.2); }
+
+    .dark  .btn-undo { background: rgba(255,255,255,0.04); color: #4a4a4a; border-color: rgba(255,255,255,0.08); }
+    .light .btn-undo { background: rgba(0,0,0,0.04); color: #bbb; border-color: rgba(0,0,0,0.08); }
+    .dark  .btn-undo:hover { background: rgba(100,150,255,0.1); color: #88aaff; border-color: rgba(100,150,255,0.22); }
+    .light .btn-undo:hover { background: rgba(61,132,245,0.08); color: #3d84f5; border-color: rgba(61,132,245,0.2); }
+    .btn-undo:disabled { opacity: 0.25; cursor: not-allowed; }
+    .btn-undo:disabled:hover { background: transparent; color: #4a4a4a; border-color: rgba(255,255,255,0.08); }
+
+    /* ── Confetti canvas ── */
+    #confetti-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── Animations ── */
     @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 
     @keyframes pulse-0 { 0%,100%{box-shadow:0 0 5px rgba(232,69,69,0.35)} 50%{box-shadow:0 0 13px rgba(232,69,69,0.85)} }
@@ -379,43 +400,125 @@
     @keyframes pulse-3 { 0%,100%{box-shadow:0 0 5px rgba(245,166,35,0.35)} 50%{box-shadow:0 0 13px rgba(245,166,35,0.85)} }
     @keyframes pulse-4 { 0%,100%{box-shadow:0 0 5px rgba(196,77,245,0.35)} 50%{box-shadow:0 0 13px rgba(196,77,245,0.85)} }
     @keyframes pulse-5 { 0%,100%{box-shadow:0 0 5px rgba(245,65,108,0.35)} 50%{box-shadow:0 0 13px rgba(245,65,108,0.85)} }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .title { font-size: 2.2rem; }
+      .players-grid.count-3,
+      .players-grid.count-5,
+      .players-grid.count-6 { grid-template-columns: 1fr 1fr; }
+      .score-display { font-size: 2.3rem; }
+      .player-card { padding: 12px 10px; }
+      .btn-complete { font-size: 0.78rem; padding: 8px 8px; }
+    }
+
+    @media (max-width: 480px) {
+      .app { padding-left: 10px; padding-right: 10px; }
+      .players-grid { gap: 10px; }
+      .title { font-size: 1.9rem; }
+      .score-display { font-size: 1.9rem; }
+      .score-label { font-size: 0.55rem; }
+      .player-card { padding: 10px 8px; border-radius: 14px; }
+      .player-name-input { font-size: 1rem; }
+      .score-input { font-size: 0.85rem; padding: 5px 6px; }
+      .btn-add { font-size: 0.75rem; padding: 5px 8px; }
+      .btn-complete { font-size: 0.72rem; padding: 7px 6px; margin-top: 7px; }
+      .phase-badge { font-size: 0.72rem; }
+      .phase-detail { font-size: 0.6rem; }
+      .phase-section-title { font-size: 0.52rem; }
+    }
+
+    @media (max-width: 340px) {
+      .players-grid.count-2,
+      .players-grid.count-3,
+      .players-grid.count-4,
+      .players-grid.count-5,
+      .players-grid.count-6 { grid-template-columns: 1fr; }
+      .title { font-size: 1.7rem; }
+      .score-display { font-size: 2.4rem; }
+      .phases-panel { padding: 12px 10px; }
+    }
   </style>
 </head>
-<body>
+<body class="dark">
+  <canvas id="confetti-canvas"></canvas>
   <div id="root"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 
   <script>
-    const { useState } = React;
+    const { useState, useEffect, useRef } = React;
     const e = React.createElement;
 
+    // ── Confetti ──────────────────────────────────────────────
+    function launchConfetti() {
+      const canvas = document.getElementById("confetti-canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const colors = ["#e84545","#3d84f5","#2ec97a","#f5a623","#c44df5","#f7c59f","#ffffff"];
+      const pieces = Array.from({ length: 160 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * -canvas.height,
+        w: Math.random() * 10 + 5,
+        h: Math.random() * 6 + 3,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rot: Math.random() * Math.PI * 2,
+        vx: (Math.random() - 0.5) * 3,
+        vy: Math.random() * 4 + 2,
+        vr: (Math.random() - 0.5) * 0.2,
+      }));
+
+      let frame;
+      let elapsed = 0;
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          ctx.restore();
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += p.vr;
+          p.vy += 0.05;
+        });
+        elapsed++;
+        if (elapsed < 220) {
+          frame = requestAnimationFrame(draw);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      draw();
+    }
+
+    // ── Data ──────────────────────────────────────────────────
     const PHASES = [
-      "2 sets of 3",
-      "1 set of 3 + 1 run of 4",
-      "1 set of 4 + 1 run of 4",
-      "1 run of 7",
-      "1 run of 8",
-      "1 run of 9",
-      "2 sets of 4",
-      "7 cards of one color",
-      "1 set of 5 + 1 set of 2",
-      "1 set of 5 + 1 set of 3",
+      "2 sets of 3","1 set of 3 + 1 run of 4","1 set of 4 + 1 run of 4",
+      "1 run of 7","1 run of 8","1 run of 9","2 sets of 4",
+      "7 cards of one color","1 set of 5 + 1 set of 2","1 set of 5 + 1 set of 3",
     ];
 
     const PLAYER_COLORS = [
-      { main: "#e84545", glowRgb: "232,69,69",  bg: "linear-gradient(160deg,#2d1515 0%,#1a0a0a 100%)", text: "#ff9999", pulse: "pulse-0" },
-      { main: "#3d84f5", glowRgb: "61,132,245", bg: "linear-gradient(160deg,#0f1f3d 0%,#080f1e 100%)", text: "#99c2ff", pulse: "pulse-1" },
-      { main: "#2ec97a", glowRgb: "46,201,122", bg: "linear-gradient(160deg,#0d2b1a 0%,#061510 100%)", text: "#88f0b8", pulse: "pulse-2" },
-      { main: "#f5a623", glowRgb: "245,166,35", bg: "linear-gradient(160deg,#2b1d06 0%,#150e00 100%)", text: "#ffd080", pulse: "pulse-3" },
-      { main: "#c44df5", glowRgb: "196,77,245", bg: "linear-gradient(160deg,#20083a 0%,#10031e 100%)", text: "#e0aaff", pulse: "pulse-4" },
-      { main: "#f5416c", glowRgb: "245,65,108", bg: "linear-gradient(160deg,#2d0d18 0%,#170509 100%)", text: "#ffaacc", pulse: "pulse-5" },
+      { main: "#e84545", glowRgb: "232,69,69",  bg: "linear-gradient(160deg,#2d1515 0%,#1a0a0a 100%)", lightBg: "linear-gradient(160deg,#fde8e8 0%,#fff0f0 100%)", text: "#ff9999", lightText: "#c03030", pulse: "pulse-0" },
+      { main: "#3d84f5", glowRgb: "61,132,245", bg: "linear-gradient(160deg,#0f1f3d 0%,#080f1e 100%)", lightBg: "linear-gradient(160deg,#e8f0fe 0%,#f0f5ff 100%)", text: "#99c2ff", lightText: "#2060c0", pulse: "pulse-1" },
+      { main: "#2ec97a", glowRgb: "46,201,122", bg: "linear-gradient(160deg,#0d2b1a 0%,#061510 100%)", lightBg: "linear-gradient(160deg,#e8faf2 0%,#f0fff8 100%)", text: "#88f0b8", lightText: "#1a8a50", pulse: "pulse-2" },
+      { main: "#f5a623", glowRgb: "245,166,35", bg: "linear-gradient(160deg,#2b1d06 0%,#150e00 100%)", lightBg: "linear-gradient(160deg,#fef4e0 0%,#fffaf0 100%)", text: "#ffd080", lightText: "#b07010", pulse: "pulse-3" },
+      { main: "#c44df5", glowRgb: "196,77,245", bg: "linear-gradient(160deg,#20083a 0%,#10031e 100%)", lightBg: "linear-gradient(160deg,#f5e8fe 0%,#fbf0ff 100%)", text: "#e0aaff", lightText: "#8030b0", pulse: "pulse-4" },
+      { main: "#f5416c", glowRgb: "245,65,108", bg: "linear-gradient(160deg,#2d0d18 0%,#170509 100%)", lightBg: "linear-gradient(160deg,#fde8ee 0%,#fff0f5 100%)", text: "#ffaacc", lightText: "#b02050", pulse: "pulse-5" },
     ];
 
     const g = (c, a) => `rgba(${c.glowRgb},${a})`;
+    const STORAGE_KEY = "phase10_state_v1";
 
-    function PlayerCard({ idx, name, score, phase, scoreInput, onNameChange, onScoreInput, onAddScore, onAdvancePhase }) {
+    // ── PlayerCard ────────────────────────────────────────────
+    function PlayerCard({ idx, name, score, phase, scoreInput, isDark, onNameChange, onScoreInput, onAddScore, onAdvancePhase }) {
       const c = PLAYER_COLORS[idx];
       const done = phase > 10;
 
@@ -426,51 +529,39 @@
       };
 
       const badgeStyle = (status) => {
-        if (status === "done") return {
-          background: c.main, color: "#fff",
-          borderColor: c.text,
-          boxShadow: `0 0 7px ${g(c, 0.5)}`,
-        };
-        if (status === "current") return {
-          background: "transparent", color: c.main,
-          borderColor: c.main,
-          animation: `${c.pulse} 1.5s infinite`,
-        };
+        if (status === "done") return { background: c.main, color: "#fff", borderColor: c.text, boxShadow: `0 0 7px ${g(c, 0.5)}` };
+        if (status === "current") return { background: "transparent", color: c.main, borderColor: c.main, animation: `${c.pulse} 1.5s infinite` };
         return {};
       };
 
-      const btnLabel = done
-        ? "🏆 All Phases Complete!"
-        : phase === 10
-          ? "✓ Complete Phase 10 — Finish!"
-          : `✓ Complete Phase ${phase}`;
+      const btnLabel = done ? "🏆 All Phases Complete!"
+        : phase === 10 ? "✓ Complete Phase 10 — Finish!"
+        : `✓ Complete Phase ${phase}`;
 
-      return e("div", {
-        className: "player-card",
-        style: {
-          background: c.bg,
-          borderColor: c.main,
-          boxShadow: `0 0 26px ${g(c, 0.12)}, inset 0 1px 0 ${g(c, 0.07)}`,
-        }
-      },
+      const cardBg = isDark ? c.bg : c.lightBg;
+      const nameColor = isDark ? c.text : c.lightText;
+      const borderColor = isDark ? c.main : c.main + "99";
+      const shadow = isDark
+        ? `0 0 26px ${g(c, 0.12)}, inset 0 1px 0 ${g(c, 0.07)}`
+        : `0 2px 16px ${g(c, 0.1)}`;
+
+      return e("div", { className: "player-card", style: { background: cardBg, borderColor, boxShadow: shadow } },
         e("div", { className: "player-name-row" },
           e("input", {
             className: "player-name-input",
-            style: { color: c.text },
+            style: { color: nameColor },
             value: name,
             onChange: ev => onNameChange(ev.target.value),
             placeholder: `Player ${idx + 1}`,
             maxLength: 14,
           })
         ),
-        e("div", { className: "score-display", style: { color: c.main, textShadow: `0 0 16px ${g(c, 0.5)}` } }, score),
+        e("div", { className: "score-display", style: { color: c.main, textShadow: isDark ? `0 0 16px ${g(c, 0.5)}` : "none" } }, score),
         e("div", { className: "score-label" }, "points"),
         e("div", { className: "score-input-row" },
           e("input", {
             className: "score-input",
-            type: "number",
-            min: "0",
-            inputMode: "numeric",
+            type: "number", min: "0", inputMode: "numeric",
             value: scoreInput,
             onChange: ev => onScoreInput(ev.target.value),
             onKeyDown: ev => ev.key === "Enter" && onAddScore(),
@@ -486,52 +577,94 @@
         e("div", { className: "phases-row" },
           PHASES.map((_, i) => {
             const status = getStatus(i);
-            return e("div", {
-              key: i,
-              className: `phase-badge ${status}`,
-              style: badgeStyle(status),
-              title: `Phase ${i + 1}: ${PHASES[i]}`,
-            }, i + 1);
+            return e("div", { key: i, className: `phase-badge ${status}`, style: badgeStyle(status), title: `Phase ${i+1}: ${PHASES[i]}` }, i + 1);
           })
         ),
-        e("div", { className: "phase-detail", style: { color: done ? "#aaa" : c.text } },
+        e("div", { className: "phase-detail", style: { color: done ? (isDark ? "#666" : "#bbb") : (isDark ? c.text : c.lightText) } },
           done ? "🏆 All phases complete!" : `📌 Phase ${phase}: ${PHASES[phase - 1]}`
         ),
         e("button", {
           className: "btn-complete",
-          style: done
-            ? { background: "rgba(255,255,255,0.06)", color: "#aaa", cursor: "default" }
-            : { background: c.main, boxShadow: `0 3px 14px ${g(c, 0.45)}` },
+          style: done ? { background: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.05)", color: isDark ? "#555" : "#ccc", cursor: "default" }
+                     : { background: c.main, boxShadow: `0 3px 14px ${g(c, 0.45)}` },
           onClick: onAdvancePhase,
           disabled: done,
         }, btnLabel)
       );
     }
 
-    const DEFAULT_NAMES = ["Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6"];
+    // ── Helpers ───────────────────────────────────────────────
+    const DEFAULT_NAMES = ["Player 1","Player 2","Player 3","Player 4","Player 5","Player 6"];
 
     function makeState(count) {
-      return {
-        names: DEFAULT_NAMES.slice(0, count),
-        scores: Array(count).fill(0),
-        phases: Array(count).fill(1),
-        inputs: Array(count).fill(""),
-      };
+      return { names: DEFAULT_NAMES.slice(0, count), scores: Array(count).fill(0), phases: Array(count).fill(1), inputs: Array(count).fill("") };
     }
 
+    function saveToStorage(playerCount, state, isDark) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ playerCount, state, isDark })); } catch(_) {}
+    }
+
+    function loadFromStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch(_) {}
+      return null;
+    }
+
+    // ── App ───────────────────────────────────────────────────
     function App() {
-      const [playerCount, setPlayerCount] = useState(2);
-      const [state, setState] = useState(makeState(2));
+      const saved = loadFromStorage();
+      const [isDark, setIsDark] = useState(saved ? saved.isDark : true);
+      const [playerCount, setPlayerCount] = useState(saved ? saved.playerCount : 2);
+      const [state, setState] = useState(saved ? saved.state : makeState(2));
+      const [history, setHistory] = useState([]);
+      const prevWinnerRef = useRef(null);
+
       const { names, scores, phases, inputs } = state;
 
+      // Sync theme class on body
+      useEffect(() => {
+        document.body.className = isDark ? "dark" : "light";
+      }, [isDark]);
+
+      // Save to localStorage on every change
+      useEffect(() => {
+        saveToStorage(playerCount, state, isDark);
+      }, [playerCount, state, isDark]);
+
+      // Confetti on new winner
+      const finishers = phases.reduce((acc, p, i) => p > 10 ? [...acc, i] : acc, []);
+      const winnerIdx = finishers.length > 0
+        ? finishers.reduce((best, i) => scores[i] < scores[best] ? i : best, finishers[0])
+        : null;
+
+      useEffect(() => {
+        if (winnerIdx !== null && prevWinnerRef.current === null) launchConfetti();
+        prevWinnerRef.current = winnerIdx;
+      }, [winnerIdx]);
+
+      // Push to history before mutating state
+      const updateWithHistory = (patch) => {
+        setHistory(h => [...h.slice(-49), state]);
+        setState(s => ({ ...s, ...patch }));
+      };
+
       const update = (patch) => setState(s => ({ ...s, ...patch }));
+
+      const undo = () => {
+        if (history.length === 0) return;
+        setState(history[history.length - 1]);
+        setHistory(h => h.slice(0, -1));
+      };
+
       const updateName = (i, v) => update({ names: names.map((x, j) => j === i ? v : x) });
       const updateInput = (i, v) => update({ inputs: inputs.map((x, j) => j === i ? v : x) });
 
       const addScore = (i) => {
         const val = parseInt(inputs[i]);
         if (!isNaN(val) && val >= 0) {
-          update({
+          updateWithHistory({
             scores: scores.map((x, j) => j === i ? x + val : x),
             inputs: inputs.map((x, j) => j === i ? "" : x),
           });
@@ -539,11 +672,11 @@
       };
 
       const advancePhase = (i) => {
-        update({ phases: phases.map((x, j) => j === i ? Math.min(x + 1, 11) : x) });
+        updateWithHistory({ phases: phases.map((x, j) => j === i ? Math.min(x + 1, 11) : x) });
       };
 
-      const changePlayerCount = (n) => { setPlayerCount(n); setState(makeState(n)); };
-      const reset = () => setState(makeState(playerCount));
+      const changePlayerCount = (n) => { setPlayerCount(n); setState(makeState(n)); setHistory([]); };
+      const reset = () => { setState(makeState(playerCount)); setHistory([]); };
 
       const getPhaseStatus = (pi, phaseNum) => {
         const p = phases[pi];
@@ -552,97 +685,96 @@
         return "future";
       };
 
-      const finishers = phases.reduce((acc, p, i) => p > 10 ? [...acc, i] : acc, []);
-      const winnerIdx = finishers.length > 0
-        ? finishers.reduce((best, i) => scores[i] < scores[best] ? i : best, finishers[0])
-        : null;
-
       return e("div", { className: "app" },
         e("div", { className: "inner" },
-        e("div", { className: "title" }, "Phase 10"),
-        e("div", { className: "subtitle" }, "Score Tracker"),
 
-        e("div", { className: "player-count-bar" },
-          e("span", { className: "player-count-label" }, "Players:"),
-          e("div", { className: "count-btns" },
-            [2, 3, 4, 5, 6].map(n =>
-              e("button", {
-                key: n,
-                className: `count-btn${playerCount === n ? " active" : ""}`,
-                onClick: () => changePlayerCount(n),
-              }, n)
+          // Header
+          e("div", { className: "header-row" },
+            e("div", { className: "title" }, "Phase 10"),
+            e("button", { className: "btn-theme", onClick: () => setIsDark(d => !d), title: "Toggle light/dark mode" },
+              isDark ? "☀️" : "🌙"
             )
-          )
-        ),
+          ),
+          e("div", { className: "subtitle" }, "Score Tracker"),
 
-        winnerIdx !== null && e("div", {
-          className: "winner-banner",
-          style: {
-            background: `linear-gradient(135deg, ${g(PLAYER_COLORS[winnerIdx], 0.25)}, ${g(PLAYER_COLORS[winnerIdx], 0.07)})`,
-            border: `2px solid ${PLAYER_COLORS[winnerIdx].main}`,
-            boxShadow: `0 0 40px ${g(PLAYER_COLORS[winnerIdx], 0.28)}`,
-          }
-        },
-          e("div", { className: "winner-text" }, `🎉 ${names[winnerIdx]} Wins!`),
-          e("div", { className: "winner-sub" }, `Completed all 10 phases · ${scores[winnerIdx]} points`)
-        ),
-
-        e("div", { className: `players-grid count-${playerCount}` },
-          Array.from({ length: playerCount }, (_, i) =>
-            e(PlayerCard, {
-              key: i,
-              idx: i,
-              name: names[i],
-              score: scores[i],
-              phase: phases[i],
-              scoreInput: inputs[i],
-              onNameChange: v => updateName(i, v),
-              onScoreInput: v => updateInput(i, v),
-              onAddScore: () => addScore(i),
-              onAdvancePhase: () => advancePhase(i),
-            })
-          )
-        ),
-
-        e("div", { className: "phases-panel" },
-          e("div", { className: "phases-panel-title" }, "All Phases"),
-          e("table", { className: "phases-table" },
-            e("thead", null,
-              e("tr", null,
-                e("th", null, "#"),
-                e("th", { className: "desc-col" }, "Requirement"),
-                ...Array.from({ length: playerCount }, (_, i) =>
-                  e("th", { key: i, style: { color: PLAYER_COLORS[i].text } }, names[i].slice(0, 7))
-                )
-              )
-            ),
-            e("tbody", null,
-              PHASES.map((desc, i) =>
-                e("tr", { key: i },
-                  e("td", { className: "td-num" }, i + 1),
-                  e("td", { className: "td-desc" }, desc),
-                  ...Array.from({ length: playerCount }, (_, pi) => {
-                    const status = getPhaseStatus(pi, i + 1);
-                    const c = PLAYER_COLORS[pi];
-                    const label = status === "done" ? "✓" : status === "current" ? "Now" : "—";
-                    const chipStyle = status === "done"
-                      ? { background: g(c, 0.18), color: c.text }
-                      : status === "current"
-                        ? { background: g(c, 0.22), color: c.main, border: `1px solid ${c.main}` }
-                        : {};
-                    return e("td", { key: pi },
-                      e("span", { className: `status-chip ${status}`, style: chipStyle }, label)
-                    );
-                  })
-                )
+          // Player count
+          e("div", { className: "player-count-bar" },
+            e("span", { className: "player-count-label" }, "Players:"),
+            e("div", { className: "count-btns" },
+              [2,3,4,5,6].map(n =>
+                e("button", { key: n, className: `count-btn${playerCount === n ? " active" : ""}`, onClick: () => changePlayerCount(n) }, n)
               )
             )
-          )
-        ),
+          ),
 
-        e("div", { className: "bottom-row" },
-          e("button", { className: "btn-reset", onClick: reset }, "↺ Reset Game")
-        )
+          // Winner banner
+          winnerIdx !== null && e("div", {
+            className: "winner-banner",
+            style: {
+              background: `linear-gradient(135deg, ${g(PLAYER_COLORS[winnerIdx], 0.25)}, ${g(PLAYER_COLORS[winnerIdx], 0.07)})`,
+              border: `2px solid ${PLAYER_COLORS[winnerIdx].main}`,
+              boxShadow: `0 0 40px ${g(PLAYER_COLORS[winnerIdx], 0.28)}`,
+            }
+          },
+            e("div", { className: "winner-text" }, `🎉 ${names[winnerIdx]} Wins!`),
+            e("div", { className: "winner-sub" }, `Completed all 10 phases · ${scores[winnerIdx]} points`)
+          ),
+
+          // Player cards
+          e("div", { className: `players-grid count-${playerCount}` },
+            Array.from({ length: playerCount }, (_, i) =>
+              e(PlayerCard, {
+                key: i, idx: i, isDark,
+                name: names[i], score: scores[i], phase: phases[i], scoreInput: inputs[i],
+                onNameChange: v => updateName(i, v),
+                onScoreInput: v => updateInput(i, v),
+                onAddScore: () => addScore(i),
+                onAdvancePhase: () => advancePhase(i),
+              })
+            )
+          ),
+
+          // Phases reference table
+          e("div", { className: "phases-panel" },
+            e("div", { className: "phases-panel-title" }, "All Phases"),
+            e("table", { className: "phases-table" },
+              e("thead", null,
+                e("tr", null,
+                  e("th", null, "#"),
+                  e("th", { className: "desc-col" }, "Requirement"),
+                  ...Array.from({ length: playerCount }, (_, i) =>
+                    e("th", { key: i, style: { color: PLAYER_COLORS[i].main } }, names[i].slice(0, 7))
+                  )
+                )
+              ),
+              e("tbody", null,
+                PHASES.map((desc, i) =>
+                  e("tr", { key: i },
+                    e("td", { className: "td-num" }, i + 1),
+                    e("td", { className: "td-desc" }, desc),
+                    ...Array.from({ length: playerCount }, (_, pi) => {
+                      const status = getPhaseStatus(pi, i + 1);
+                      const c = PLAYER_COLORS[pi];
+                      const label = status === "done" ? "✓" : status === "current" ? "Now" : "—";
+                      const chipStyle = status === "done"
+                        ? { background: g(c, 0.18), color: c.text }
+                        : status === "current"
+                          ? { background: g(c, 0.22), color: c.main, border: `1px solid ${c.main}` }
+                          : {};
+                      return e("td", { key: pi }, e("span", { className: `status-chip ${status}`, style: chipStyle }, label));
+                    })
+                  )
+                )
+              )
+            )
+          ),
+
+          // Bottom buttons
+          e("div", { className: "bottom-row" },
+            e("button", { className: "btn-undo", onClick: undo, disabled: history.length === 0 }, "↩ Undo"),
+            e("button", { className: "btn-reset", onClick: reset }, "↺ Reset Game")
+          )
+
         ) // close .inner
       );
     }
