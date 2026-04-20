@@ -209,6 +209,15 @@
       border-color: #222;
     }
 
+    .phase-detail {
+      font-size: 0.68rem;
+      color: #444;
+      margin-top: 5px;
+      min-height: 15px;
+      font-style: italic;
+      line-height: 1.3;
+    }
+
     .btn-complete {
       width: 100%;
       border: none;
@@ -440,6 +449,9 @@
               title: `Phase ${i + 1}: ${PHASES[i]}`,
             }, i + 1);
           })
+        ),
+        e("div", { className: "phase-detail", style: { color: done ? "#aaa" : c.text } },
+          done ? "🏆 All phases complete!" : `📌 Phase ${phase}: ${PHASES[phase - 1]}`
         ),
         e("button", {
           className: "btn-complete",
