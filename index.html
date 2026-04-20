@@ -27,6 +27,13 @@
       background: radial-gradient(ellipse at 20% 20%, #1a1040 0%, #0e0e14 60%);
       padding: env(safe-area-inset-top, 24px) 16px calc(env(safe-area-inset-bottom, 0px) + 40px);
       padding-top: max(env(safe-area-inset-top), 24px);
+      box-sizing: border-box;
+    }
+
+    .inner {
+      max-width: 740px;
+      margin: 0 auto;
+      width: 100%;
     }
 
     .title {
@@ -91,19 +98,58 @@
     .players-grid {
       display: grid;
       gap: 14px;
-      margin: 0 auto 22px;
+      margin: 0 0 22px;
     }
 
-    .players-grid.count-2 { grid-template-columns: 1fr 1fr; max-width: 520px; }
-    .players-grid.count-3 { grid-template-columns: 1fr 1fr 1fr; max-width: 740px; }
-    .players-grid.count-4 { grid-template-columns: 1fr 1fr; max-width: 520px; }
-    .players-grid.count-5 { grid-template-columns: 1fr 1fr 1fr; max-width: 740px; }
-    .players-grid.count-6 { grid-template-columns: 1fr 1fr 1fr; max-width: 740px; }
+    .players-grid.count-2 { grid-template-columns: 1fr 1fr; }
+    .players-grid.count-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .players-grid.count-4 { grid-template-columns: 1fr 1fr; }
+    .players-grid.count-5 { grid-template-columns: 1fr 1fr 1fr; }
+    .players-grid.count-6 { grid-template-columns: 1fr 1fr 1fr; }
 
-    @media (max-width: 500px) {
+    /* --- Responsive breakpoints --- */
+
+    /* 600px: 3-col grids drop to 2-col, start shrinking text */
+    @media (max-width: 600px) {
+      .title { font-size: 2.2rem; }
+
       .players-grid.count-3,
       .players-grid.count-5,
       .players-grid.count-6 { grid-template-columns: 1fr 1fr; }
+
+      .score-display { font-size: 2.3rem; }
+      .player-card { padding: 12px 10px; }
+      .btn-complete { font-size: 0.78rem; padding: 8px 8px; }
+    }
+
+    /* 480px: shrink further, tighten gaps */
+    @media (max-width: 480px) {
+      .app { padding-left: 10px; padding-right: 10px; }
+      .players-grid { gap: 10px; }
+      .title { font-size: 1.9rem; }
+      .score-display { font-size: 1.9rem; }
+      .score-label { font-size: 0.55rem; }
+      .player-card { padding: 10px 8px; border-radius: 14px; }
+      .player-name-input { font-size: 1rem; }
+      .score-input { font-size: 0.85rem; padding: 5px 6px; }
+      .btn-add { font-size: 0.75rem; padding: 5px 8px; }
+      .btn-complete { font-size: 0.72rem; padding: 7px 6px; margin-top: 7px; }
+      .phase-badge { font-size: 0.72rem; }
+      .phase-detail { font-size: 0.6rem; }
+      .phase-section-title { font-size: 0.52rem; }
+    }
+
+    /* 340px: only now go single column for 2-col grids */
+    @media (max-width: 340px) {
+      .players-grid.count-2,
+      .players-grid.count-3,
+      .players-grid.count-4,
+      .players-grid.count-5,
+      .players-grid.count-6 { grid-template-columns: 1fr; }
+
+      .title { font-size: 1.7rem; }
+      .score-display { font-size: 2.4rem; }
+      .phases-panel { padding: 12px 10px; }
     }
 
     .player-card {
@@ -236,14 +282,16 @@
     .btn-complete:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
     .phases-panel {
-      max-width: 740px;
-      margin: 0 auto 20px;
+      margin: 0 0 20px;
       background: rgba(255,255,255,0.02);
       border: 1px solid rgba(255,255,255,0.05);
       border-radius: 18px;
       padding: 16px;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
+
+    .phases-table { min-width: 280px; }
 
     .phases-panel-title {
       font-family: 'Boogaloo', cursive;
@@ -293,8 +341,7 @@
     .status-chip.future { background: rgba(255,255,255,0.03); color: #2e2e2e; }
 
     .winner-banner {
-      max-width: 740px;
-      margin: 0 auto 20px;
+      margin: 0 0 20px;
       border-radius: 18px;
       padding: 18px;
       text-align: center;
@@ -307,8 +354,6 @@
     .bottom-row {
       display: flex;
       gap: 10px;
-      max-width: 740px;
-      margin: 0 auto;
       justify-content: center;
     }
 
@@ -513,6 +558,7 @@
         : null;
 
       return e("div", { className: "app" },
+        e("div", { className: "inner" },
         e("div", { className: "title" }, "Phase 10"),
         e("div", { className: "subtitle" }, "Score Tracker"),
 
@@ -597,6 +643,7 @@
         e("div", { className: "bottom-row" },
           e("button", { className: "btn-reset", onClick: reset }, "↺ Reset Game")
         )
+        ) // close .inner
       );
     }
 
