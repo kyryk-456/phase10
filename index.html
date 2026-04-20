@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Phase 10" />
+  <meta name="theme-color" content="#0e0e14" />
+  <title>Phase 10 Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background: #0e0e14;
+      min-height: 100vh;
+      font-family: 'Nunito', sans-serif;
+      overscroll-behavior: none;
+    }
+
+    #root { min-height: 100vh; }
+
+    .app {
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 20% 20%, #1a1040 0%, #0e0e14 60%);
+      padding: env(safe-area-inset-top, 24px) 16px calc(env(safe-area-inset-bottom, 0px) + 40px);
+      padding-top: max(env(safe-area-inset-top), 24px);
+    }
+
+    .title {
+      font-family: 'Boogaloo', cursive;
+      font-size: 2.8rem;
+      text-align: center;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #e84545, #f7c59f, #3d84f5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #555;
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .player-count-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .player-count-label {
+      color: #555;
+      font-size: 0.78rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .count-btns {
+      display: flex;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 30px;
+      overflow: hidden;
+    }
+
+    .count-btn {
+      background: transparent;
+      border: none;
+      color: #555;
+      font-family: 'Boogaloo', cursive;
+      font-size: 1.1rem;
+      padding: 7px 16px;
+      cursor: pointer;
+      transition: all 0.18s;
+      border-right: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .count-btn:last-child { border-right: none; }
+    .count-btn.active { background: rgba(255,255,255,0.1); color: #fff; }
+
+    .players-grid {
+      display: grid;
+      gap: 14px;
+      margin: 0 auto 22px;
+    }
+
+    .players-grid.count-2 { grid-template-columns: 1fr 1fr; max-width: 660px; }
+    .players-grid.count-3 { grid-template-columns: 1fr 1fr 1fr; max-width: 900px; }
+    .players-grid.count-4 { grid-template-columns: 1fr 1fr; max-width: 660px; }
+    .players-grid.count-5 { grid-template-columns: 1fr 1fr 1fr; max-width: 900px; }
+    .players-grid.count-6 { grid-template-columns: 1fr 1fr 1fr; max-width: 900px; }
+
+    @media (max-width: 500px) {
+      .players-grid.count-3,
+      .players-grid.count-5,
+      .players-grid.count-6 { grid-template-columns: 1fr 1fr; }
+    }
+
+    .player-card {
+      border-radius: 18px;
+      padding: 16px 14px;
+      border: 2px solid transparent;
+    }
+
+    .player-name-row { display: flex; align-items: center; margin-bottom: 10px; }
+
+    .player-name-input {
+      font-family: 'Boogaloo', cursive;
+      font-size: 1.2rem;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid rgba(255,255,255,0.12);
+      color: #fff;
+      width: 100%;
+      outline: none;
+      padding-bottom: 2px;
+      transition: border-color 0.2s;
+    }
+
+    .player-name-input:focus { border-bottom-color: rgba(255,255,255,0.38); }
+
+    .score-display {
+      font-family: 'Boogaloo', cursive;
+      font-size: 2.9rem;
+      text-align: center;
+      line-height: 1;
+      margin: 6px 0 2px;
+    }
+
+    .score-label {
+      text-align: center;
+      font-size: 0.62rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #444;
+      margin-bottom: 10px;
+    }
+
+    .score-input-row { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
+
+    .score-input {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 8px;
+      outline: none;
+      text-align: center;
+      min-width: 0;
+      -webkit-appearance: none;
+    }
+
+    .btn-add {
+      border: none;
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 0.82rem;
+      cursor: pointer;
+      padding: 8px 12px;
+      color: #fff;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-add:active { transform: scale(0.95); }
+
+    .phase-section-title {
+      font-size: 0.58rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #3a3a3a;
+      margin-bottom: 6px;
+    }
+
+    .phases-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
+
+    .phase-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      font-family: 'Boogaloo', cursive;
+      font-size: 0.85rem;
+      border: 2px solid transparent;
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .phase-badge.future {
+      background: rgba(255,255,255,0.03);
+      color: #333;
+      border-color: #222;
+    }
+
+    .btn-complete {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      padding: 10px 12px;
+      color: #fff;
+      letter-spacing: 0.3px;
+      transition: all 0.18s;
+      margin-top: 10px;
+    }
+
+    .btn-complete:active { transform: scale(0.97); }
+    .btn-complete:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+    .phases-panel {
+      max-width: 960px;
+      margin: 0 auto 20px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 18px;
+      padding: 16px;
+      overflow-x: auto;
+    }
+
+    .phases-panel-title {
+      font-family: 'Boogaloo', cursive;
+      font-size: 1.05rem;
+      color: #444;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .phases-table { width: 100%; border-collapse: collapse; font-size: 0.76rem; }
+
+    .phases-table th {
+      font-size: 0.58rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #3a3a3a;
+      padding: 3px 8px 7px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .phases-table th.desc-col { text-align: left; }
+
+    .phases-table td {
+      padding: 6px 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .phases-table tr:last-child td { border-bottom: none; }
+
+    .td-num { font-family: 'Boogaloo', cursive; font-size: 0.95rem; color: #333; width: 26px; }
+    .td-desc { color: #555; text-align: left; white-space: nowrap; }
+
+    .status-chip {
+      display: inline-block;
+      font-size: 0.62rem;
+      padding: 2px 6px;
+      border-radius: 20px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-chip.future { background: rgba(255,255,255,0.03); color: #2e2e2e; }
+
+    .winner-banner {
+      max-width: 960px;
+      margin: 0 auto 20px;
+      border-radius: 18px;
+      padding: 18px;
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .winner-text { font-family: 'Boogaloo', cursive; font-size: 2rem; color: #fff; }
+    .winner-sub { color: #777; font-size: 0.8rem; margin-top: 4px; }
+
+    .bottom-row {
+      display: flex;
+      gap: 10px;
+      max-width: 960px;
+      margin: 0 auto;
+      justify-content: center;
+    }
+
+    .btn-reset {
+      background: rgba(255,255,255,0.04);
+      color: #4a4a4a;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 10px 24px;
+      font-size: 0.82rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 1px;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+    @keyframes pulse-0 { 0%,100%{box-shadow:0 0 5px rgba(232,69,69,0.35)} 50%{box-shadow:0 0 13px rgba(232,69,69,0.85)} }
+    @keyframes pulse-1 { 0%,100%{box-shadow:0 0 5px rgba(61,132,245,0.35)} 50%{box-shadow:0 0 13px rgba(61,132,245,0.85)} }
+    @keyframes pulse-2 { 0%,100%{box-shadow:0 0 5px rgba(46,201,122,0.35)} 50%{box-shadow:0 0 13px rgba(46,201,122,0.85)} }
+    @keyframes pulse-3 { 0%,100%{box-shadow:0 0 5px rgba(245,166,35,0.35)} 50%{box-shadow:0 0 13px rgba(245,166,35,0.85)} }
+    @keyframes pulse-4 { 0%,100%{box-shadow:0 0 5px rgba(196,77,245,0.35)} 50%{box-shadow:0 0 13px rgba(196,77,245,0.85)} }
+    @keyframes pulse-5 { 0%,100%{box-shadow:0 0 5px rgba(245,65,108,0.35)} 50%{box-shadow:0 0 13px rgba(245,65,108,0.85)} }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+
+  <script>
+    const { useState } = React;
+    const e = React.createElement;
+
+    const PHASES = [
+      "2 sets of 3",
+      "1 set of 3 + 1 run of 4",
+      "1 set of 4 + 1 run of 4",
+      "1 run of 7",
+      "1 run of 8",
+      "1 run of 9",
+      "2 sets of 4",
+      "7 cards of one color",
+      "1 set of 5 + 1 set of 2",
+      "1 set of 5 + 1 set of 3",
+    ];
+
+    const PLAYER_COLORS = [
+      { main: "#e84545", glowRgb: "232,69,69",  bg: "linear-gradient(160deg,#2d1515 0%,#1a0a0a 100%)", text: "#ff9999", pulse: "pulse-0" },
+      { main: "#3d84f5", glowRgb: "61,132,245", bg: "linear-gradient(160deg,#0f1f3d 0%,#080f1e 100%)", text: "#99c2ff", pulse: "pulse-1" },
+      { main: "#2ec97a", glowRgb: "46,201,122", bg: "linear-gradient(160deg,#0d2b1a 0%,#061510 100%)", text: "#88f0b8", pulse: "pulse-2" },
+      { main: "#f5a623", glowRgb: "245,166,35", bg: "linear-gradient(160deg,#2b1d06 0%,#150e00 100%)", text: "#ffd080", pulse: "pulse-3" },
+      { main: "#c44df5", glowRgb: "196,77,245", bg: "linear-gradient(160deg,#20083a 0%,#10031e 100%)", text: "#e0aaff", pulse: "pulse-4" },
+      { main: "#f5416c", glowRgb: "245,65,108", bg: "linear-gradient(160deg,#2d0d18 0%,#170509 100%)", text: "#ffaacc", pulse: "pulse-5" },
+    ];
+
+    const g = (c, a) => `rgba(${c.glowRgb},${a})`;
+
+    function PlayerCard({ idx, name, score, phase, scoreInput, onNameChange, onScoreInput, onAddScore, onAdvancePhase }) {
+      const c = PLAYER_COLORS[idx];
+      const done = phase > 10;
+
+      const getStatus = (i) => {
+        if (i + 1 < phase) return "done";
+        if (i + 1 === phase) return "current";
+        return "future";
+      };
+
+      const badgeStyle = (status) => {
+        if (status === "done") return {
+          background: c.main, color: "#fff",
+          borderColor: c.text,
+          boxShadow: `0 0 7px ${g(c, 0.5)}`,
+        };
+        if (status === "current") return {
+          background: "transparent", color: c.main,
+          borderColor: c.main,
+          animation: `${c.pulse} 1.5s infinite`,
+        };
+        return {};
+      };
+
+      const btnLabel = done
+        ? "🏆 All Phases Complete!"
+        : phase === 10
+          ? "✓ Complete Phase 10 — Finish!"
+          : `✓ Complete Phase ${phase}`;
+
+      return e("div", {
+        className: "player-card",
+        style: {
+          background: c.bg,
+          borderColor: c.main,
+          boxShadow: `0 0 26px ${g(c, 0.12)}, inset 0 1px 0 ${g(c, 0.07)}`,
+        }
+      },
+        e("div", { className: "player-name-row" },
+          e("input", {
+            className: "player-name-input",
+            style: { color: c.text },
+            value: name,
+            onChange: ev => onNameChange(ev.target.value),
+            placeholder: `Player ${idx + 1}`,
+            maxLength: 14,
+          })
+        ),
+        e("div", { className: "score-display", style: { color: c.main, textShadow: `0 0 16px ${g(c, 0.5)}` } }, score),
+        e("div", { className: "score-label" }, "points"),
+        e("div", { className: "score-input-row" },
+          e("input", {
+            className: "score-input",
+            type: "number",
+            min: "0",
+            inputMode: "numeric",
+            value: scoreInput,
+            onChange: ev => onScoreInput(ev.target.value),
+            onKeyDown: ev => ev.key === "Enter" && onAddScore(),
+            placeholder: "pts",
+          }),
+          e("button", {
+            className: "btn-add",
+            style: { background: c.main, boxShadow: `0 2px 9px ${g(c, 0.38)}` },
+            onClick: onAddScore,
+          }, "+ Add")
+        ),
+        e("div", { className: "phase-section-title" }, "Phase Progress"),
+        e("div", { className: "phases-row" },
+          PHASES.map((_, i) => {
+            const status = getStatus(i);
+            return e("div", {
+              key: i,
+              className: `phase-badge ${status}`,
+              style: badgeStyle(status),
+              title: `Phase ${i + 1}: ${PHASES[i]}`,
+            }, i + 1);
+          })
+        ),
+        e("button", {
+          className: "btn-complete",
+          style: done
+            ? { background: "rgba(255,255,255,0.06)", color: "#aaa", cursor: "default" }
+            : { background: c.main, boxShadow: `0 3px 14px ${g(c, 0.45)}` },
+          onClick: onAdvancePhase,
+          disabled: done,
+        }, btnLabel)
+      );
+    }
+
+    const DEFAULT_NAMES = ["Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6"];
+
+    function makeState(count) {
+      return {
+        names: DEFAULT_NAMES.slice(0, count),
+        scores: Array(count).fill(0),
+        phases: Array(count).fill(1),
+        inputs: Array(count).fill(""),
+      };
+    }
+
+    function App() {
+      const [playerCount, setPlayerCount] = useState(2);
+      const [state, setState] = useState(makeState(2));
+      const { names, scores, phases, inputs } = state;
+
+      const update = (patch) => setState(s => ({ ...s, ...patch }));
+      const updateName = (i, v) => update({ names: names.map((x, j) => j === i ? v : x) });
+      const updateInput = (i, v) => update({ inputs: inputs.map((x, j) => j === i ? v : x) });
+
+      const addScore = (i) => {
+        const val = parseInt(inputs[i]);
+        if (!isNaN(val) && val >= 0) {
+          update({
+            scores: scores.map((x, j) => j === i ? x + val : x),
+            inputs: inputs.map((x, j) => j === i ? "" : x),
+          });
+        }
+      };
+
+      const advancePhase = (i) => {
+        update({ phases: phases.map((x, j) => j === i ? Math.min(x + 1, 11) : x) });
+      };
+
+      const changePlayerCount = (n) => { setPlayerCount(n); setState(makeState(n)); };
+      const reset = () => setState(makeState(playerCount));
+
+      const getPhaseStatus = (pi, phaseNum) => {
+        const p = phases[pi];
+        if (phaseNum < p) return "done";
+        if (phaseNum === p) return "current";
+        return "future";
+      };
+
+      const finishers = phases.reduce((acc, p, i) => p > 10 ? [...acc, i] : acc, []);
+      const winnerIdx = finishers.length > 0
+        ? finishers.reduce((best, i) => scores[i] < scores[best] ? i : best, finishers[0])
+        : null;
+
+      return e("div", { className: "app" },
+        e("div", { className: "title" }, "Phase 10"),
+        e("div", { className: "subtitle" }, "Score Tracker"),
+
+        e("div", { className: "player-count-bar" },
+          e("span", { className: "player-count-label" }, "Players:"),
+          e("div", { className: "count-btns" },
+            [2, 3, 4, 5, 6].map(n =>
+              e("button", {
+                key: n,
+                className: `count-btn${playerCount === n ? " active" : ""}`,
+                onClick: () => changePlayerCount(n),
+              }, n)
+            )
+          )
+        ),
+
+        winnerIdx !== null && e("div", {
+          className: "winner-banner",
+          style: {
+            background: `linear-gradient(135deg, ${g(PLAYER_COLORS[winnerIdx], 0.25)}, ${g(PLAYER_COLORS[winnerIdx], 0.07)})`,
+            border: `2px solid ${PLAYER_COLORS[winnerIdx].main}`,
+            boxShadow: `0 0 40px ${g(PLAYER_COLORS[winnerIdx], 0.28)}`,
+          }
+        },
+          e("div", { className: "winner-text" }, `🎉 ${names[winnerIdx]} Wins!`),
+          e("div", { className: "winner-sub" }, `Completed all 10 phases · ${scores[winnerIdx]} points`)
+        ),
+
+        e("div", { className: `players-grid count-${playerCount}` },
+          Array.from({ length: playerCount }, (_, i) =>
+            e(PlayerCard, {
+              key: i,
+              idx: i,
+              name: names[i],
+              score: scores[i],
+              phase: phases[i],
+              scoreInput: inputs[i],
+              onNameChange: v => updateName(i, v),
+              onScoreInput: v => updateInput(i, v),
+              onAddScore: () => addScore(i),
+              onAdvancePhase: () => advancePhase(i),
+            })
+          )
+        ),
+
+        e("div", { className: "phases-panel" },
+          e("div", { className: "phases-panel-title" }, "All Phases"),
+          e("table", { className: "phases-table" },
+            e("thead", null,
+              e("tr", null,
+                e("th", null, "#"),
+                e("th", { className: "desc-col" }, "Requirement"),
+                ...Array.from({ length: playerCount }, (_, i) =>
+                  e("th", { key: i, style: { color: PLAYER_COLORS[i].text } }, names[i].slice(0, 7))
+                )
+              )
+            ),
+            e("tbody", null,
+              PHASES.map((desc, i) =>
+                e("tr", { key: i },
+                  e("td", { className: "td-num" }, i + 1),
+                  e("td", { className: "td-desc" }, desc),
+                  ...Array.from({ length: playerCount }, (_, pi) => {
+                    const status = getPhaseStatus(pi, i + 1);
+                    const c = PLAYER_COLORS[pi];
+                    const label = status === "done" ? "✓" : status === "current" ? "Now" : "—";
+                    const chipStyle = status === "done"
+                      ? { background: g(c, 0.18), color: c.text }
+                      : status === "current"
+                        ? { background: g(c, 0.22), color: c.main, border: `1px solid ${c.main}` }
+                        : {};
+                    return e("td", { key: pi },
+                      e("span", { className: `status-chip ${status}`, style: chipStyle }, label)
+                    );
+                  })
+                )
+              )
+            )
+          )
+        ),
+
+        e("div", { className: "bottom-row" },
+          e("button", { className: "btn-reset", onClick: reset }, "↺ Reset Game")
+        )
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(e(App));
+  </script>
+</body>
+</html>
